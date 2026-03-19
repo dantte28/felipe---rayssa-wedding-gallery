@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Felipe & Rayssa - Galeria de Casamento</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
+  <body>
+    <header>
+        <div class="container">
+            <h1>Felipe & Rayssa</h1>
+            <p class="subtitle">Compartilhe seus momentos desse dia especial</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="nav-buttons">
+            <button id="showUpload" class="btn btn-primary">Enviar Foto</button>
+            <button id="showGallery" class="btn btn-secondary">Ver Galeria</button>
+        </div>
+
+        <!-- Upload Section -->
+        <section id="uploadSection" class="active">
+            <div class="upload-card">
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="nameInput">Seu Nome (Opcional)</label>
+                        <input type="text" id="nameInput" placeholder="Ex: João Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>Sua Foto</label>
+                        <div class="file-input-wrapper">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Toque para selecionar</span>
+                            <input type="file" id="photoInput" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="preview-container">
+                        <img id="imagePreview" src="" alt="Preview">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Enviar Foto</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallerySection">
+            <div id="galleryGrid" class="gallery-grid">
+                <!-- Photos will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="Enlarged view">
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="loader"></div>
+        <p>Enviando sua foto...</p>
+    </div>
+
+    <script src="/script.js?v=2"></script>
+  </body>
+</html>
+
