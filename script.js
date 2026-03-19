@@ -1,7 +1,8 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk8N0MxJDMUZmQcuPD7QvQfPd26afFTSLCcASG5E03zeCXAh4fx1L1I3sBlklT3DVF/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
-    function showToast(message, success = true) {
+    function showToast(message, success) {
+        if (success === undefined) success = true;
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.style.background = success ? '#4CAF50' : '#E74C3C';
@@ -72,7 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingOverlay.style.display = 'flex';
 
         try {
-            for (let file of files) {
+            // Utilizamos loop clássico aqui em vez de "for..of" porque 
+            // navegadores mobile mais antigos cracham ao tentar iterar um FileList:
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
                 const base64 = await compressImage(file);
                 const payload = {
                     image: base64.split(',')[1],
