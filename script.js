@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
             previewContainer.style.display = 'none';
             return;
         }
+        
+        console.log("Arquivo selecionado:", file);
         imagePreview.src = URL.createObjectURL(file);
         previewContainer.style.display = 'block';
     });
@@ -77,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             alert('Foto enviada com sucesso!');
             uploadForm.reset();
+            fileInput.value = "";
             previewContainer.style.display = 'none';
             galleryBtn.click();
         } catch (error) {
