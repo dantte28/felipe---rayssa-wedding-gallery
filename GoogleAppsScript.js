@@ -44,7 +44,9 @@ function doGet(e) {
       var file = files.next();
       if (file.getMimeType().indexOf('image/') !== -1) {
         var urlId = file.getId();
-        var displayUrl = "https://drive.google.com/uc?export=view&id=" + urlId;
+        // Usa a API de thumbnail do Google Drive, que é a única forma 100% segura
+        // de mostrar imagens do Drive em tags <img> em sites externos atualmente:
+        var displayUrl = "https://drive.google.com/thumbnail?id=" + urlId + "&sz=w1000";
         
         photos.push({
           url: displayUrl,

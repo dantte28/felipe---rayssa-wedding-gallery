@@ -35,14 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // File Preview
-    fileInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            imagePreview.src = URL.createObjectURL(file);
-            previewContainer.style.display = 'block';
-        } else {
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) {
+            alert('Falha ao carregar a foto do celular. Verifique se ela está salva no aparelho (e não na nuvem) e tente novamente!');
             previewContainer.style.display = 'none';
+            return;
         }
+        imagePreview.src = URL.createObjectURL(file);
+        previewContainer.style.display = 'block';
     });
 
     // Form Submission
