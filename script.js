@@ -1,13 +1,26 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk8N0MxJDMUZmQcuPD7QvQfPd26afFTSLCcASG5E03zeCXAh4fx1L1I3sBlklT3DVF/exec';
 
+window.onerror = function(msg) {
+    alert("Erro JS: " + msg);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    function showToast(message, success) {
-        if (success === undefined) success = true;
+    function showToast(message, success = true) {
         const toast = document.getElementById('toast');
+
+        if (!toast) {
+            alert(message); // fallback
+            return;
+        }
+
         toast.textContent = message;
         toast.style.background = success ? '#4CAF50' : '#E74C3C';
+
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
     }
 
     const uploadBtn = document.getElementById('showUpload');
@@ -24,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.querySelector('.close-modal');
 
     // Navigation
-    uploadBtn.addEventListener('click', () => {
+    uploadBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         uploadSection.classList.add('active');
         gallerySection.classList.remove('active');
         uploadBtn.classList.add('btn-primary');
@@ -33,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryBtn.classList.remove('btn-primary');
     });
 
-    galleryBtn.addEventListener('click', () => {
+    galleryBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         gallerySection.classList.add('active');
         uploadSection.classList.remove('active');
         galleryBtn.classList.add('btn-primary');
@@ -52,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewContainer.style.display = 'none';
             return;
         }
-        
+
         console.log("Arquivos selecionados:", files);
         imagePreview.src = URL.createObjectURL(files[0]);
         previewContainer.style.display = 'block';
@@ -61,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form Submission
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const files = fileInput.files;
         const name = document.getElementById('nameInput').value || 'Convidado';
 
@@ -73,10 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingOverlay.style.display = 'flex';
 
         try {
-            // Utilizamos loop clássico aqui em vez de "for..of" porque 
-            // navegadores mobile mais antigos cracham ao tentar iterar um FileList:
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+            for (let file of files) {
                 const base64 = await compressImage(file);
                 const payload = {
                     image: base64.split(',')[1],
@@ -93,13 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             showToast('Fotos enviadas com sucesso! 📸', true);
+
             uploadForm.reset();
-            fileInput.value = "";
             previewContainer.style.display = 'none';
+            fileInput.value = "";
+
             galleryBtn.click();
         } catch (error) {
-            console.error('Upload error:', error);
-            showToast('Erro ao enviar fotos 😢', false);
+            console.error(error);
+            showToast('Erro ao enviar 😢', false);
         } finally {
             loadingOverlay.style.display = 'none';
         }
@@ -116,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             grid.innerHTML = '';
-            
+
             if (data.photos && data.photos.length > 0) {
                 data.photos.forEach(photo => {
                     const item = document.createElement('div');
