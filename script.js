@@ -1,6 +1,14 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk8N0MxJDMUZmQcuPD7QvQfPd26afFTSLCcASG5E03zeCXAh4fx1L1I3sBlklT3DVF/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
+    function showToast(message, success = true) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.background = success ? '#4CAF50' : '#E74C3C';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
     const uploadBtn = document.getElementById('showUpload');
     const galleryBtn = document.getElementById('showGallery');
     const uploadSection = document.getElementById('uploadSection');
@@ -35,16 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // File Preview
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) {
-            alert('Falha ao carregar a foto do celular. Verifique se ela está salva no aparelho (e não na nuvem) e tente novamente!');
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+
+        if (!files.length) {
+            showToast('Selecione pelo menos uma foto', false);
             previewContainer.style.display = 'none';
             return;
         }
         
-        console.log("Arquivo selecionado:", file);
-        imagePreview.src = URL.createObjectURL(file);
+        console.log("Arquivos selecionados:", files);
+        imagePreview.src = URL.createObjectURL(files[0]);
         previewContainer.style.display = 'block';
     });
 
@@ -52,39 +61,41 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const file = fileInput.files[0];
+        const files = fileInput.files;
         const name = document.getElementById('nameInput').value || 'Convidado';
 
-        if (!file) {
-            alert('Por favor, selecione uma foto.');
+        if (!files.length) {
+            showToast('Selecione pelo menos uma foto', false);
             return;
         }
 
         loadingOverlay.style.display = 'flex';
 
         try {
-            const base64 = await compressImage(file);
-            const payload = {
-                image: base64.split(',')[1],
-                mimeType: 'image/jpeg',
-                name: name,
-                filename: file.name
-            };
+            for (let file of files) {
+                const base64 = await compressImage(file);
+                const payload = {
+                    image: base64.split(',')[1],
+                    mimeType: 'image/jpeg',
+                    name: name,
+                    filename: file.name
+                };
 
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(payload)
-            });
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+            }
 
-            alert('Foto enviada com sucesso!');
+            showToast('Fotos enviadas com sucesso! 📸', true);
             uploadForm.reset();
             fileInput.value = "";
             previewContainer.style.display = 'none';
             galleryBtn.click();
         } catch (error) {
             console.error('Upload error:', error);
-            alert('Erro: ' + error.message + '\n\nCertifique-se de que colou a nova URL corretamente no arquivo script.js!');
+            showToast('Erro ao enviar fotos 😢', false);
         } finally {
             loadingOverlay.style.display = 'none';
         }

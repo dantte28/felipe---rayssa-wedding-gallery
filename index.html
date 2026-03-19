@@ -24,6 +24,12 @@
         <!-- Upload Section -->
         <section id="uploadSection" class="active">
             <div class="upload-card">
+                <div class="tutorial-message" style="background: #FFF1E6; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; color: var(--color-dark); font-size: 0.9rem; border: 1px dashed var(--color-gold);">
+                    <strong>📸 Como compartilhar?</strong><br>
+                    1. Escolha suas fotos tocando abaixo.<br>
+                    2. Pressione "Enviar Foto".<br>
+                    3. Depois passe para aba <strong>Ver Galeria</strong> (no topo) para ver todas as lembranças juntas!
+                </div>
                 <form id="uploadForm">
                     <div class="form-group">
                         <label for="nameInput">Seu Nome (Opcional)</label>
@@ -34,7 +40,7 @@
                         <label class="file-input-wrapper" for="photoInput">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Toque para selecionar</span>
-                            <input type="file" id="photoInput" accept="image/*" />
+                            <input type="file" id="photoInput" accept="image/*" multiple />
                         </label>
                     </div>
                     <div class="preview-container">
@@ -67,7 +73,10 @@
         <p>Enviando sua foto...</p>
     </div>
 
-    <script src="/script.js?v=2"></script>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/script.js?v=3"></script>
   </body>
 </html>
 

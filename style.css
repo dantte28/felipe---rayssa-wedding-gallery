@@ -78,19 +78,21 @@ h1 {
     color: white;
 }
 
-.btn-primary:hover {
-    background-color: #b38f6d;
-    transform: translateY(-2px);
-}
-
 .btn-secondary {
     background-color: var(--color-peach);
     color: var(--color-dark);
 }
 
-.btn-secondary:hover {
-    background-color: #d9bba9;
-    transform: translateY(-2px);
+@media (hover: hover) {
+    .btn-primary:hover {
+        background-color: #b38f6d;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary:hover {
+        background-color: #d9bba9;
+        transform: translateY(-2px);
+    }
 }
 
 /* Sections */
@@ -299,6 +301,26 @@ input[type="text"] {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transition: 0.3s;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
 }
 
 /* Mobile Adjustments */
