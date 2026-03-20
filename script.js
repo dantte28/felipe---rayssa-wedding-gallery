@@ -133,9 +133,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data && data.photos && data.photos.length > 0) {
                     for (var i = 0; i < data.photos.length; i++) {
                         var photo = data.photos[i];
+                        
+                        // Correção para o novo bloqueio do Google Drive em imagens (REAPLICADO)
+                        var displayUrl = photo.url;
+                        if (displayUrl.indexOf('uc?export=view&id=') !== -1) {
+                            var fileId = displayUrl.split('id=')[1].split('&')[0];
+                            displayUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
+                        }
+                        
                         var item = document.createElement('div');
                         item.className = 'gallery-item';
-                        item.innerHTML = '<img src="' + photo.url + '" alt="Foto" loading="lazy">' +
+                        item.innerHTML = '<img src="' + displayUrl + '" alt="Foto" loading="lazy">' +
                             '<div class="overlay">' +
                             '<span class="author-name">Por: ' + photo.name + '</span>' +
                             '</div>';
@@ -145,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 modalImg.src = imgUrl;
                                 modal.style.display = 'flex';
                             });
-                        })(photo.url);
+                        })(displayUrl);
 
                         grid.appendChild(item);
                     }
