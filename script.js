@@ -1,6 +1,6 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk8N0MxJDMUZmQcuPD7QvQfPd26afFTSLCcASG5E03zeCXAh4fx1L1I3sBlklT3DVF/exec';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     function showToast(message, success) {
         if (success === undefined) success = true;
         var toast = document.getElementById('toast');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toast.style.background = success ? '#4CAF50' : '#E74C3C';
         toast.classList.add('show');
 
-        setTimeout(function() {
+        setTimeout(function () {
             toast.classList.remove('show');
         }, 3000);
     }
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var closeModal = document.querySelector('.close-modal');
 
     // Navigation
-    uploadBtn.addEventListener('click', function(e) {
+    uploadBtn.addEventListener('click', function (e) {
         e.preventDefault();
         uploadSection.classList.add('active');
         gallerySection.classList.remove('active');
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         galleryBtn.classList.remove('btn-primary');
     });
 
-    galleryBtn.addEventListener('click', function(e) {
+    galleryBtn.addEventListener('click', function (e) {
         e.preventDefault();
         gallerySection.classList.add('active');
         uploadSection.classList.remove('active');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // File Preview
-    fileInput.addEventListener('change', function(e) {
+    fileInput.addEventListener('change', function (e) {
         var files = e.target.files;
 
         if (!files || files.length === 0) {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Form Submission
-    uploadForm.addEventListener('submit', function(e) {
+    uploadForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
         var files = fileInput.files;
@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var uploads = [];
         for (var i = 0; i < files.length; i++) {
-            (function(file) {
-                var p = compressImage(file).then(function(base64) {
+            (function (file) {
+                var p = compressImage(file).then(function (base64) {
                     var payload = {
                         image: base64.split(',')[1],
                         mimeType: 'image/jpeg',
@@ -104,16 +104,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })(files[i]);
         }
 
-        Promise.all(uploads).then(function() {
+        Promise.all(uploads).then(function () {
             showToast('Fotos enviadas com sucesso! 📸', true);
             uploadForm.reset();
             previewContainer.style.display = 'none';
             fileInput.value = "";
             galleryBtn.click();
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.error(error);
             showToast('Erro ao enviar 😢', false);
-        }).finally(function() {
+        }).finally(function () {
             loadingOverlay.style.display = 'none';
         });
     });
@@ -124,10 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
         grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Carregando galeria...</p>';
 
         fetch(SCRIPT_URL + '?action=getPhotos')
-            .then(function(response) {
+            .then(function (response) {
                 return response.json();
             })
-            .then(function(data) {
+            .then(function (data) {
                 grid.innerHTML = '';
 
                 if (data && data.photos && data.photos.length > 0) {
@@ -136,12 +136,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         var item = document.createElement('div');
                         item.className = 'gallery-item';
                         item.innerHTML = '<img src="' + photo.url + '" alt="Foto" loading="lazy">' +
-                                         '<div class="overlay">' +
-                                             '<span class="author-name">Por: ' + photo.name + '</span>' +
-                                         '</div>';
-                        
-                        (function(imgUrl) {
-                            item.addEventListener('click', function() {
+                            '<div class="overlay">' +
+                            '<span class="author-name">Por: ' + photo.name + '</span>' +
+                            '</div>';
+
+                        (function (imgUrl) {
+                            item.addEventListener('click', function () {
                                 modalImg.src = imgUrl;
                                 modal.style.display = 'flex';
                             });
@@ -153,18 +153,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Nenhuma foto ainda. Seja o primeiro a enviar!</p>';
                 }
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.error('Gallery error:', error);
                 grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Erro ao carregar a galeria.</p>';
             });
     }
 
     // Modal Close
-    closeModal.addEventListener('click', function() {
+    closeModal.addEventListener('click', function () {
         modal.style.display = 'none';
     });
 
-    window.addEventListener('click', function(e) {
+    window.addEventListener('click', function (e) {
         if (e.target === modal) {
             modal.style.display = 'none';
         }
@@ -172,9 +172,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper: Compress Image
     function compressImage(file) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             var img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 URL.revokeObjectURL(img.src);
                 var canvas = document.createElement('canvas');
                 var MAX_WIDTH = 1200;
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ctx.drawImage(img, 0, 0, width, height);
                 resolve(canvas.toDataURL('image/jpeg', 0.8));
             };
-            img.onerror = function(error) {
+            img.onerror = function (error) {
                 URL.revokeObjectURL(img.src);
                 reject(error);
             };
