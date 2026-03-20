@@ -136,8 +136,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         
                         // Correção para o novo bloqueio do Google Drive em imagens (REAPLICADO)
                         var displayUrl = photo.url;
+                        var fileId = '';
+                        if (displayUrl.indexOf('id=') !== -1) {
+                            fileId = displayUrl.split('id=')[1].split('&')[0];
+                        }
+
                         if (displayUrl.indexOf('uc?export=view&id=') !== -1) {
-                            var fileId = displayUrl.split('id=')[1].split('&')[0];
                             displayUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
                         }
                         
@@ -148,12 +152,23 @@ document.addEventListener('DOMContentLoaded', function () {
                             '<span class="author-name">Por: ' + photo.name + '</span>' +
                             '</div>';
 
-                        (function (imgUrl) {
+                        (function (imgUrl, authorName, id) {
                             item.addEventListener('click', function () {
                                 modalImg.src = imgUrl;
+                                
+                                var modalAuthor = document.getElementById('modalAuthor');
+                                if (modalAuthor) {
+                                    modalAuthor.textContent = 'Enviada por: ' + authorName;
+                                }
+                                
+                                var modalDownload = document.getElementById('modalDownload');
+                                if (modalDownload && id) {
+                                    modalDownload.href = 'https://drive.google.com/uc?export=download&id=' + id;
+                                }
+                                
                                 modal.style.display = 'flex';
                             });
-                        })(displayUrl);
+                        })(displayUrl, photo.name, fileId);
 
                         grid.appendChild(item);
                     }
